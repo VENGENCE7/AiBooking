@@ -21,9 +21,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 import json
 load_dotenv()
-# from duffel_api import Duffel
-# duffel = Duffel(
-#     access_token="duffel_test_WKzCHbtD0sYNLNPMxBq5roboNItDvh6rJz5Gkdh1lzt")
+
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ask_init = ["fly_from", "fly_to", "date_from", "date_to", "sort"]
 llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613")
@@ -117,19 +115,14 @@ def add_non_empty_details(current_details: GetFlightInPeriodCheckInput,new_detai
 def filter_response(text_input, user_flight_details):
     res = tagging_chain.run(text_input)
     user_flight_details = add_non_empty_details(user_flight_details, res)
-    # print(user_flight_details)
     ask_for = check_what_is_empty(user_flight_details)
-    # print(ask_for)
     return user_flight_details, ask_for
 
 def get_flight_in_period(fly_from, fly_to, date_from, date_to, sort):
-    # print(
-        # f'function calling: {fly_from}, {fly_to}, {date_from}, {date_to}, {sort}')
     headers = {"apikey": "0tvfUPHxSK3axHyPv0wOlCKPcwcF-T7f"}
     BASE_URL = f'https://api.tequila.kiwi.com/v2/search?fly_from={fly_from}&fly_to={fly_to}&date_from={date_from}&date_to={date_to}&sort={sort}&limit=10&curr=AUD'
     response = requests.get(BASE_URL, headers=headers)
     response = response.json()
-    # print(response)
     flights = []
     for flight in response['data']:
         price = flight['price']
@@ -148,7 +141,6 @@ def get_flight_in_period(fly_from, fly_to, date_from, date_to, sort):
                 "to":f"{route['cityTo']}"
             }
             details.append(singleRoute)
-            # detail += f"<Stop-{idx}>: {route['airline']}{route['flight_no']}, {route['cityFrom']}/{route['flyFrom']} to {route['cityTo']}/{route['flyTo']}, {route['local_departure']} to {route['local_arrival']} \r\n"
 
         flight_info = {
             "price": price,
@@ -164,9 +156,7 @@ def get_flight_in_period(fly_from, fly_to, date_from, date_to, sort):
 def booking_details(input_data, first_msg, user_flight_details):
     ai_response = ""
     if first_msg:
-        # print("initializing chain")
         ask_for = ask_init
-    # print({"input": input_data})
     user_flight_details, ask_for = filter_response(
         input_data, user_flight_details)
     if input_data != "yes":
@@ -178,12 +168,11 @@ def booking_details(input_data, first_msg, user_flight_details):
         data=json.dumps(flights, separators=(',', ':'))
         print(flights)
         return {"response": ai_response, "flight_details": user_flight_details,"success":True,"data":flights}
-    # print({"response": ai_response, "flight_details": user_flight_details})
     return {"response": ai_response, "flight_details": user_flight_details}
 
 app = FastAPI()
 origins = [
-    "http://localhost:3000",  # Allow localhost for development  # HTTPS version
+    "http://localhost:3000",
 ]
 
 app.add_middleware(
@@ -213,20 +202,3 @@ async def handler(request: Request, body: RequestBody):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
-
-class GetFlightInPeriodTool(BaseTool):
-    name = "get_flight_in_period"
-    description = """Useful when you need to search the flights info. You can sort the result by "sort" argument.
-                    You need to consider 2023 for default year of search.
-                    Try to understand the parameters of every flight
-                  """
-    def _run(self, fly_from: str, fly_to: str, date_from: str, date_to: str, sort: str):
-        get_flight_in_period_response = get_flight_in_period(
-            fly_from, fly_to, date_from, date_to, sort
-        )
-        return get_flight_in_period_response
-    def _arun(
-        self, fly_from: str, fly_to: str, date_from: str, date_to: str, sort: str
-    ):
-        raise NotImplementedError("This tool does not support async")
-    args_schema: Optional[Type[BaseModel]] = GetFlightInPeriodCheckInput
