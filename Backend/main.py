@@ -12,7 +12,7 @@ import os
 from langchain.tools import BaseTool
 from langchain.chains import create_tagging_chain_pydantic
 from langchain.chat_models import ChatOpenAI
-from pydantic import BaseModel, Field, conlist
+from pydantic import BaseModel, Field
 from typing import Optional, Type
 import requests
 from fastapi import FastAPI, HTTPException, Request, Depends
@@ -21,6 +21,11 @@ from dotenv import load_dotenv
 from datetime import datetime
 import json
 load_dotenv()
+
+import sys
+sys.path.append('core/schemas') 
+from tequilaSchema import GetFlightInPeriodCheckInput,RequestBody
+
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ask_init = ["fly_from", "fly_to", "date_from", "date_to", "sort"]
@@ -72,21 +77,21 @@ def ask_for_info(ask_for, input_data):
     })
     return chain_output
 
-class GetFlightInPeriodCheckInput(BaseModel):
-    fly_from: str = Field(...,
-                          description="the 3-digit code for departure airport")
-    fly_to: str = Field(...,
-                        description="the 3-digit code for arrival airport")
-    date_from: str = Field(
-        ..., description="the dd/mm/yyyy format of start date for the range of search"
-    )
-    date_to: str = Field(
-        ..., description="the dd/mm/yyyy format of end date for the range of search"
-    )
-    sort: str = Field(
-        ...,
-        description="the category for low-to-high sorting, only support 'price', 'duration', 'date'",
-    )
+# class GetFlightInPeriodCheckInput(BaseModel):
+#     fly_from: str = Field(...,
+#                           description="the 3-digit code for departure airport")
+#     fly_to: str = Field(...,
+#                         description="the 3-digit code for arrival airport")
+#     date_from: str = Field(
+#         ..., description="the dd/mm/yyyy format of start date for the range of search"
+#     )
+#     date_to: str = Field(
+#         ..., description="the dd/mm/yyyy format of end date for the range of search"
+#     )
+#     sort: str = Field(
+#         ...,
+#         description="the category for low-to-high sorting, only support 'price', 'duration', 'date'",
+#     )
 
 tagging_chain = create_tagging_chain_pydantic(GetFlightInPeriodCheckInput, llm)
 
@@ -98,16 +103,13 @@ def check_what_is_empty(flight_details):
     ask_for = []
     for field, value in flight_details.items():
         if value in [None, "", 0]:
-            # print(f"Field '{field}' is empty.")
             ask_for.append(f"{field}")
     return ask_for
 
 def add_non_empty_details(current_details: GetFlightInPeriodCheckInput,new_details: GetFlightInPeriodCheckInput,):
-    # print(new_details.dict(), "new _details")
     non_empty_details = {
         k: v for k, v in new_details.dict().items() if v not in [None, "", 0]
     }
-    # print('_________', non_empty_details, '__________')
     updated_details = current_details.dict()
     updated_details.update(non_empty_details)
     return updated_details
@@ -175,6 +177,7 @@ origins = [
     "http://localhost:3000",
 ]
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -182,9 +185,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-class RequestBody(BaseModel):
-    input: str
-    firstMsg: bool
 
 @app.post("/")
 async def handler(request: Request, body: RequestBody):

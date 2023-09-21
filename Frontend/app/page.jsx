@@ -21,14 +21,12 @@ const Memory = () => {
   };
 
   const handleSubmitPrompt = async () => {
-    // console.log("sending ", prompt);
     try {
       // Update the user message
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: prompt, type: "user", sourceDocuments: null },
       ]);
-      // console.log({ input: prompt, firstMsg });
       const response = await fetch("http://127.0.0.1:8000", {
         method: "POST",
         headers: {
