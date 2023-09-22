@@ -14,7 +14,7 @@ from langchain.chat_models import ChatOpenAI
 from dotenv import load_dotenv
 load_dotenv()
 
-from core.schemas import GetFlightInPeriodCheckInput, RequestBody
+from core.schemas import GetFlightInPeriodCheckInput
 from core.constants import promptTemplate
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

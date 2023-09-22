@@ -1,7 +1,7 @@
 # core/schemas/__init__.py
 
 # Import important classes and objects to make them available at the package level
-from .llm import tagging_chain,chain
+from .llm import tagging_chain,chain,user_flight_details
 
 # Define package-level constants or configurations
 API_VERSION = "1.0"
