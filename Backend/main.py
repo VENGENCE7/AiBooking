@@ -1,7 +1,6 @@
-from langchain.chains import LLMChain, ConversationChain
+from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import (
-    PromptTemplate,
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
@@ -9,23 +8,23 @@ from langchain.prompts import (
 )
 from langchain.chat_models import ChatOpenAI
 import os
-from langchain.tools import BaseTool
+# from langchain.tools import BaseTool
 from langchain.chains import create_tagging_chain_pydantic
 from langchain.chat_models import ChatOpenAI
-from pydantic import BaseModel
-import requests
+# import requests
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from datetime import datetime
-import json
+# from datetime import datetime
+# import json
 load_dotenv()
 
 from core.schemas import GetFlightInPeriodCheckInput, RequestBody
 from core.constants import promptTemplate
+from core.utils.bookingDetails import booking_details
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-ask_init = ["fly_from", "fly_to", "date_from", "date_to", "sort"]
+# ask_init = ["fly_from", "fly_to", "date_from", "date_to", "sort"]
 
 
 llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613")
@@ -53,28 +52,12 @@ chain = LLMChain(
     memory=memory
 )
 
-def ask_for_info(ask_for, input_data):
-    chain_output = chain({
-        "input_data": input_data,
-        "ask_for": ask_for,
-    })
-    return chain_output
-
-# class GetFlightInPeriodCheckInput(BaseModel):
-#     fly_from: str = Field(...,
-#                           description="the 3-digit code for departure airport")
-#     fly_to: str = Field(...,
-#                         description="the 3-digit code for arrival airport")
-#     date_from: str = Field(
-#         ..., description="the dd/mm/yyyy format of start date for the range of search"
-#     )
-#     date_to: str = Field(
-#         ..., description="the dd/mm/yyyy format of end date for the range of search"
-#     )
-#     sort: str = Field(
-#         ...,
-#         description="the category for low-to-high sorting, only support 'price', 'duration', 'date'",
-#     )
+# def ask_for_info(ask_for, input_data):
+#     chain_output = chain({
+#         "input_data": input_data,
+#         "ask_for": ask_for,
+#     })
+#     return chain_output
 
 tagging_chain = create_tagging_chain_pydantic(GetFlightInPeriodCheckInput, llm)
 
@@ -89,7 +72,7 @@ def check_what_is_empty(flight_details):
             ask_for.append(f"{field}")
     return ask_for
 
-def add_non_empty_details(current_details: GetFlightInPeriodCheckInput,new_details: GetFlightInPeriodCheckInput,):
+def add_non_empty_details(current_details: GetFlightInPeriodCheckInput,new_details: GetFlightInPeriodCheckInput):
     non_empty_details = {
         k: v for k, v in new_details.dict().items() if v not in [None, "", 0]
     }
@@ -97,63 +80,63 @@ def add_non_empty_details(current_details: GetFlightInPeriodCheckInput,new_detai
     updated_details.update(non_empty_details)
     return updated_details
 
-def filter_response(text_input, user_flight_details):
-    res = tagging_chain.run(text_input)
-    user_flight_details = add_non_empty_details(user_flight_details, res)
-    ask_for = check_what_is_empty(user_flight_details)
-    return user_flight_details, ask_for
+# def filter_response(text_input, user_flight_details):
+#     res = tagging_chain.run(text_input)
+#     user_flight_details = add_non_empty_details(user_flight_details, res)
+#     ask_for = check_what_is_empty(user_flight_details)
+#     return user_flight_details, ask_for
 
-def get_flight_in_period(fly_from, fly_to, date_from, date_to, sort):
-    headers = {"apikey": "0tvfUPHxSK3axHyPv0wOlCKPcwcF-T7f"}
-    BASE_URL = f'https://api.tequila.kiwi.com/v2/search?fly_from={fly_from}&fly_to={fly_to}&date_from={date_from}&date_to={date_to}&sort={sort}&limit=10&curr=AUD'
-    response = requests.get(BASE_URL, headers=headers)
-    response = response.json()
-    flights = []
-    for flight in response['data']:
-        price = flight['price']
-        duration = flight['duration']['departure']/3600
-        availability = flight['availability']["seats"]
-        routes = flight['route']
-        departure= datetime.fromisoformat(flight['local_departure'][:-1])
-        arrival=datetime.fromisoformat(flight['local_arrival'][:-1])
-        details = []
-        for idx, route in enumerate(routes):
-            singleRoute={
-                "index":idx,
-                "route":route['airline'],
-                "flightNo":route['flight_no'],
-                "from":f"{route['cityFrom']}",
-                "to":f"{route['cityTo']}"
-            }
-            details.append(singleRoute)
+# def get_flight_in_period(fly_from, fly_to, date_from, date_to, sort):
+#     headers = {"apikey": "0tvfUPHxSK3axHyPv0wOlCKPcwcF-T7f"}
+#     BASE_URL = f'https://api.tequila.kiwi.com/v2/search?fly_from={fly_from}&fly_to={fly_to}&date_from={date_from}&date_to={date_to}&sort={sort}&limit=10&curr=AUD'
+#     response = requests.get(BASE_URL, headers=headers)
+#     response = response.json()
+#     flights = []
+#     for flight in response['data']:
+#         price = flight['price']
+#         duration = flight['duration']['departure']/3600
+#         availability = flight['availability']["seats"]
+#         routes = flight['route']
+#         departure= datetime.fromisoformat(flight['local_departure'][:-1])
+#         arrival=datetime.fromisoformat(flight['local_arrival'][:-1])
+#         details = []
+#         for idx, route in enumerate(routes):
+#             singleRoute={
+#                 "index":idx,
+#                 "route":route['airline'],
+#                 "flightNo":route['flight_no'],
+#                 "from":f"{route['cityFrom']}",
+#                 "to":f"{route['cityTo']}"
+#             }
+#             details.append(singleRoute)
 
-        flight_info = {
-            "price": price,
-            "duration": duration,
-            "availability": availability,
-            "departure":departure.strftime("%b %d, %Y %I:%M %p"),
-            "arrival":arrival.strftime("%b %d, %Y %I:%M %p"),
-            "routes": details
-        }
-        flights.append(flight_info)
-    return flights
+#         flight_info = {
+#             "price": price,
+#             "duration": duration,
+#             "availability": availability,
+#             "departure":departure.strftime("%b %d, %Y %I:%M %p"),
+#             "arrival":arrival.strftime("%b %d, %Y %I:%M %p"),
+#             "routes": details
+#         }
+#         flights.append(flight_info)
+#     return flights
 
-def booking_details(input_data, first_msg, user_flight_details):
-    ai_response = ""
-    if first_msg:
-        ask_for = ask_init
-    user_flight_details, ask_for = filter_response(
-        input_data, user_flight_details)
-    if input_data != "yes":
-        chain_output = ask_for_info(ask_for, input_data)
-        ai_response = chain_output["text"]
-    else:
-        flights = get_flight_in_period('BLR', 'MEL', '14/09/2023','16/09/2023', 'price')
-        ai_response = "Here are the flights available for you: "
-        data=json.dumps(flights, separators=(',', ':'))
-        print(flights)
-        return {"response": ai_response, "flight_details": user_flight_details,"success":True,"data":flights}
-    return {"response": ai_response, "flight_details": user_flight_details}
+# def booking_details(input_data, first_msg, user_flight_details):
+#     ai_response = ""
+#     if first_msg:
+#         ask_for = ask_init
+#     user_flight_details, ask_for = filter_response(
+#         input_data, user_flight_details)
+#     if input_data != "yes":
+#         chain_output = ask_for_info(ask_for, input_data)
+#         ai_response = chain_output["text"]
+#     else:
+#         flights = get_flight_in_period('BLR', 'MEL', '14/09/2023','16/09/2023', 'price')
+#         ai_response = "Here are the flights available for you: "
+#         data=json.dumps(flights, separators=(',', ':'))
+#         print(flights)
+#         return {"response": ai_response, "flight_details": user_flight_details,"success":True,"data":flights}
+#     return {"response": ai_response, "flight_details": user_flight_details}
 
 app = FastAPI()
 
