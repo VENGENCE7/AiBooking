@@ -15,7 +15,7 @@ def booking_details(input_data, first_msg, user_flight_details):
         chain_output = ask_for_info(ask_for, input_data)
         ai_response = chain_output["text"]
     else:
-        flights = get_flight_in_period('BLR', 'MEL', '14/09/2023','16/09/2023', 'price')
+        flights = get_flight_in_period('BLR', 'MEL', '14/10/2023','16/10/2023', 'price')
         ai_response = "Here are the flights available for you: "
         data=json.dumps(flights, separators=(',', ':'))
         print(flights)
