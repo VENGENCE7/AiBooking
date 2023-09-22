@@ -8,12 +8,9 @@ export const metadata = {
   description: "Booked Ai POC",
 };
 
-
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head></head>
       <body
         className={inter.className}
         style={{
