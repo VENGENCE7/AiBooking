@@ -7,16 +7,16 @@ from langchain.prompts import (
     MessagesPlaceholder
 )
 from langchain.chat_models import ChatOpenAI
-import os
 from langchain.chains import create_tagging_chain_pydantic
 from langchain.chat_models import ChatOpenAI
 
+import os
 from dotenv import load_dotenv
-load_dotenv()
 
 from core.schemas import GetFlightInPeriodCheckInput
 from core.constants import promptTemplate
 
+load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613")
@@ -34,7 +34,8 @@ prompt = ChatPromptTemplate.from_messages([
 )
 
 memory = ConversationBufferMemory(
-    memory_key="chat_history", return_messages=True,
+    memory_key="chat_history", 
+    return_messages=True,
     input_key="input_data",
 )
 

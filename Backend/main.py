@@ -1,14 +1,15 @@
 
-from fastapi import FastAPI, HTTPException, Request, Depends
-from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-# from datetime import datetime
-# import json
-load_dotenv()
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
 
 from core.schemas import  RequestBody
 from core.utils.bookingDetails import booking_details
 from ai.llm import user_flight_details
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -37,7 +38,5 @@ async def handler(request: Request, body: RequestBody):
     else:
         raise HTTPException(status_code=405, detail="Only POST is allowed")
 
-# To run the app:
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)

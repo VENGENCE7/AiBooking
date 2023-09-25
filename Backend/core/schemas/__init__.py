@@ -3,10 +3,6 @@
 # Import important classes and objects to make them available at the package level
 from .tequilaSchema import GetFlightInPeriodCheckInput, RequestBody
 
-# Define package-level constants or configurations
-API_VERSION = "1.0"
-DEBUG_MODE = False
-
 # Perform any package-level initialization if needed
 import logging
 
