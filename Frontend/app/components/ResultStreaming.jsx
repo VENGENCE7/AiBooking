@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 const ResultStreaming = ({ data }) => {
@@ -8,17 +10,17 @@ const ResultStreaming = ({ data }) => {
         <pre className="text-black-500 mb-4">{data}</pre>
       )}
       {/* If data is an object */}
-      {data && <p className="text-black-500 mb-4">{data?.output}</p>}
+      {data && <div className="text-black-500 mb-4">{data?.output}</div>}
 
       {/* If data has source documents (e.g. when querying from a VectorDBQAChain and returnSourceDocuments is true) */}
       {data &&
         data.sourceDocuments &&
         data.sourceDocuments.map((doc, index) => (
           <div key={index} className="bg-grey-100 p-1 rounded shadow mb-2">
-            <p>
+            <div>
               Source {index}: {doc.pageContent}
-            </p>
-            <p className="text-gray-700">From: {doc.metadata.source}</p>
+            </div>
+            <div className="text-gray-700">From: {doc.metadata.source}</div>
           </div>
         ))}
     </div>

@@ -12,12 +12,14 @@ const Button = ({ color, handleSubmit, endpoint, buttonText }) => {
   const colorClass = colorClasses[color] || "bg-white hover:bg-white"; // Default to blue if color prop not recognized
 
   return (
-    <button
-      onClick={endpoint ? () => handleSubmit(`/${endpoint}`) : handleSubmit}
-      className={`py-2 px-6 mb-4 rounded-full border border-gray-500 shadow hover:shadow-lg ${colorClass}`}
-    >
-      {buttonText}
-    </button>
+    <div>
+      <button
+        onClick={endpoint ? () => handleSubmit(`/${endpoint}`) : handleSubmit}
+        className={`py-2 px-6 mb-4 rounded-full border border-gray-500 shadow hover:shadow-lg ${colorClass}`}
+      >
+        {buttonText}
+      </button>
+    </div>
   );
 };
 

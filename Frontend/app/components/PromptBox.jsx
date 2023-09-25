@@ -17,7 +17,7 @@ const PromptBox = ({
     }
   };
   return (
-    <>
+    <div>
       <div className="flex items-center mb-4">
         {labelText && (
           <label htmlFor="" className="mr-4">
@@ -25,14 +25,14 @@ const PromptBox = ({
           </label>
         )}
 
-        <input
-          type="text"
-          value={prompt}
-          onChange={handlePromptChange}
-          onKeyDown={handleKeyDown}
-          placeholder={placeHolderText || "Enter your prompt"}
-          className="w-full mr-4 py-2 px-4 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded shadow"
-        />
+          <input
+            type="text"
+            value={prompt}
+            onChange={handlePromptChange}
+            onKeyDown={handleKeyDown}
+            placeholder={placeHolderText || "Enter your prompt"}
+            className="w-full mr-4 py-2 px-4 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded shadow"
+          />
 
         {!disableButton && (
           <button
@@ -43,8 +43,10 @@ const PromptBox = ({
           </button>
         )}
       </div>
-      <p className={`text-red-500 ${error ? "block" : "hidden"}`}>{error}</p>
-    </>
+      <div className={`text-red-500 ${error ? "block" : "hidden"}`}>
+        {error}
+      </div>
+    </div>
   );
 };
 

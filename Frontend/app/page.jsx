@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "./components/PageHeader";
 import PromptBox from "./components/PromptBox";
 import Title from "./components/Title";
@@ -14,7 +14,12 @@ const Memory = () => {
   const [messages, setMessages] = useState([]);
   const [firstMsg, setFirstMsg] = useState(true);
   const [flightDetails, setFlightDetails] = useState(false);
-  const [flights,setFlights]=useState([])
+  const [flights, setFlights] = useState([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handlePromptChange = (e) => {
     setPrompt(e.target.value);
@@ -43,9 +48,9 @@ const Memory = () => {
       // So we don't reinitialize the chain
       setFirstMsg(false);
       const searchRes = await response.json();
-      if(searchRes.success ){
-        setFlights(searchRes?.data)
-        setFlightDetails(true)
+      if (searchRes.success) {
+        setFlights(searchRes?.data);
+        setFlightDetails(true);
       }
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -59,31 +64,35 @@ const Memory = () => {
   };
 
   return (
-    <>
-      <Title headingText={"Memory"} emoji="🧠" />
-      <TwoColumnLayout
-        leftChildren={
-          <>
-            <PageHeader
-              heading="Booked.ai - Flight Booking Assistant"
-              description="Your Personal Travel Assistant"
-            />
-            {flightDetails&&<Table data={flights}/>}
-          </>
-        }
-        rightChildren={
-          <>
-            <ResultWithSources messages={messages} pngFile="brain" />
-            <PromptBox
-              prompt={prompt}
-              handleSubmit={handleSubmitPrompt}
-              error={error}
-              handlePromptChange={handlePromptChange}
-            />
-          </>
-        }
-      />
-    </>
+    mounted && (
+      <>
+        <section>
+          <Title headingText={"Memory"} emoji="🧠" />
+          <TwoColumnLayout
+            leftChildren={
+              <div>
+                <PageHeader
+                  heading="Booked.ai - Flight Booking Assistant"
+                  description="Your Personal Travel Assistant"
+                />
+                {flightDetails && <Table data={flights} />}
+              </div>
+            }
+            rightChildren={
+              <>
+                <ResultWithSources messages={messages} pngFile="brain" />
+                <PromptBox
+                  prompt={prompt}
+                  handleSubmit={handleSubmitPrompt}
+                  error={error}
+                  handlePromptChange={handlePromptChange}
+                />
+              </>
+            }
+          />
+        </section>
+      </>
+    )
   );
 };
 

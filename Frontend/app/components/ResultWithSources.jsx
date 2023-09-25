@@ -1,9 +1,10 @@
+'use client'
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 const MessageItem = ({ message, pngFile, isLast }) => {
-  const userImage = "/assets/images/green-square.png";
-  const botImage = `/assets/images/${pngFile}.png`;
+  const userImage = "assets/images/green-square.png";
+  const botImage = `assets/images/${pngFile}.png`;
   const [showSources, setShowSources] = useState(false);
 
   return (
@@ -20,12 +21,12 @@ const MessageItem = ({ message, pngFile, isLast }) => {
             unoptimized
           />
         </div>
-        <p
+        <div
           className={message.type === "user" ? "user" : "bot"}
           style={{ maxWidth: "90%" }}
         >
           {message.text}
-        </p>
+        </div>
       </div>
 
       {message.sourceDocuments && (
@@ -39,12 +40,12 @@ const MessageItem = ({ message, pngFile, isLast }) => {
           {showSources &&
             message.sourceDocuments.map((document, docIndex) => (
               <div key={docIndex}>
-                <h3 className="text-gray-600 text-sm font-bold">
+                <div className="text-gray-600 text-sm font-bold">
                   Source {docIndex + 1}:
-                </h3>
-                <p className="text-gray-800 text-sm mt-2">
+                </div>
+                <div className="text-gray-800 text-sm mt-2">
                   {document.pageContent}
-                </p>
+                </div>
                 <pre className="text-xs text-gray-500 mt-2">
                   {JSON.stringify(document.metadata, null, 2)}
                 </pre>
