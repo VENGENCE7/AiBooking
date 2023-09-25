@@ -2,23 +2,23 @@ from pydantic import BaseModel, Field
 
 class GetFlightInPeriodCheckInput(BaseModel):
     fly_from: str = Field(
-        ...,
-        description="the 3-digit code for departure airport"
+        None,
+        description="the 3-digit IATA code for departure airport"
     )
     fly_to: str = Field(
-        ...,
-        description="the 3-digit code for arrival airport"
+        None,
+        description="the 3-digit IATA code for arrival airport"
     )
     date_from: str = Field(
-        ...,
+        None,
         description="the dd/mm/yyyy format of start date for the range of search"
     )
     date_to: str = Field(
-        ...,
+        None,
         description="the dd/mm/yyyy format of end date for the range of search"
     )
     sort: str = Field(
-        ...,
+        None,
         description="the category for low-to-high sorting, only support 'price', 'duration', 'date'"
     )
 

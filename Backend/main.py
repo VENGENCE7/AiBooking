@@ -7,7 +7,7 @@ import uvicorn
 
 from core.schemas import  RequestBody
 from core.utils.bookingDetails import booking_details
-from ai.llm import user_flight_details
+from core.constants.requiredBookingDetails import requiredBookingDetails
 
 load_dotenv()
 
@@ -33,7 +33,7 @@ async def handler(request: Request, body: RequestBody):
         first_msg = body.firstMsg
         if not input_data:
             raise HTTPException(status_code=400, detail="No input!")
-        details = booking_details(input_data, first_msg, user_flight_details)
+        details = booking_details(input_data, first_msg, requiredBookingDetails)
         return details
     else:
         raise HTTPException(status_code=405, detail="Only POST is allowed")

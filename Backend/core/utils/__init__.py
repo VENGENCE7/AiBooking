@@ -3,10 +3,7 @@
 # Import important classes and objects to make them available at the package level
 from .bookingDetails import booking_details
 from .getFlights import get_flight_in_period
-
-# Define package-level constants or configurations
-API_VERSION = "1.0"
-DEBUG_MODE = False
+from .updateDetails import updateDetails
 
 # Perform any package-level initialization if needed
 import logging
