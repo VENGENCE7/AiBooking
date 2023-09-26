@@ -11,7 +11,13 @@ import "./globals.css";
 const Memory = () => {
   const [prompt, setPrompt] = useState("");
   const [error, setError] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      sourceDocuments: null,
+      text: "Hello! I'm a flight booking agent. I can assist you in finding and booking flights according to your needs. Are you looking to book a flight?",
+      type: "bot",
+    },
+  ]);
   const [firstMsg, setFirstMsg] = useState(true);
   const [flightDetails, setFlightDetails] = useState(false);
   const [flights, setFlights] = useState([]);
@@ -28,6 +34,7 @@ const Memory = () => {
   const handleSubmitPrompt = async () => {
     try {
       // Update the user message
+      setPrompt("");
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: prompt, type: "user", sourceDocuments: null },
@@ -56,6 +63,7 @@ const Memory = () => {
         ...prevMessages,
         { text: searchRes.response, type: "bot", sourceDocuments: null },
       ]);
+      console.log(messages);
       setError("");
     } catch (err) {
       console.error(err);
