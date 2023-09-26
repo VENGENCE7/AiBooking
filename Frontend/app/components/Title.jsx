@@ -4,10 +4,10 @@ const Title = ({ emoji, headingText }) => {
   return (
     <div>
       <div>
-        <h1 className="text-center mb-4">{emoji}</h1>
+        <h1 className="text-center mb-4 text-5xl">{emoji}</h1>
       </div>
       <div>
-        <p className="text-center mb-8">{headingText.toUpperCase()}</p>
+        <p className="text-center mb-8 text-2xl leading-tight text-primary">{headingText.toUpperCase()}</p>
       </div>
     </div>
   );
