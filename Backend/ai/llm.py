@@ -7,7 +7,7 @@ from langchain.prompts import (
     MessagesPlaceholder
 )
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import create_extraction_chain_pydantic
+from langchain.chains import create_tagging_chain_pydantic
 from langchain.chat_models import ChatOpenAI
 
 import os
@@ -43,9 +43,9 @@ chain = LLMChain(
     llm=llm,
     prompt=prompt,
     memory=memory,
-    verbose=True
+    # verbose=True
 )
 
-extraction_chain = create_extraction_chain_pydantic(GetFlightInPeriodCheckInput, llm)
+extraction_chain = create_tagging_chain_pydantic(GetFlightInPeriodCheckInput, llm)
 
-user_flight_details = GetFlightInPeriodCheckInput(requiredBookingDetails)
+user_flight_details = GetFlightInPeriodCheckInput(**requiredBookingDetails)

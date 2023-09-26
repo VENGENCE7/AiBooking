@@ -42,3 +42,4 @@ Backend/pyenv/
 /.next/
 .swc/
 .env
+test

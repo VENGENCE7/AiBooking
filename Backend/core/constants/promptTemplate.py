@@ -13,6 +13,7 @@ promptTemplate="""
 
     IMPORTANT INSTRUCTIONS:
     - date_from and date_to are the dates between which user wants to travel.
+    - the dates cannot be less than current date.As we can only book flights for the future.
     - date should be store in dd/mm/yy format only,convert if necessary
     - the origin and destination will be provided as full names,but you should store them using IATA code only,search if needed.  
     - sort is the category for low-to-high sorting, only support 'price', 'duration', 'date'.
